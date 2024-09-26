@@ -24,10 +24,10 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public List<Item> getOwnerItems(long userId) {
-        return new ArrayList<>(items.values()
+        return items.values()
                 .stream()
                 .filter(item -> item.getOwnerId() == userId)
-                .toList());
+                .toList();
     }
 
     @Override

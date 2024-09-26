@@ -3,7 +3,7 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.EmailIsBusy;
+import ru.practicum.shareit.exception.AlreadyOccupiedEmailException;
 import ru.practicum.shareit.exception.NotFoundEntityException;
 import ru.practicum.shareit.user.dto.UserCreateDto;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     public UserDto addUser(UserCreateDto request) {
         log.info("Создание нового пользователя {}", request);
         if (!emailNotBusy(request.getEmail())) {
-            throw new EmailIsBusy("Email занят");
+            throw new AlreadyOccupiedEmailException("Email занят");
         }
         User user = userMapper.toUser(request);
         user = userRepository.addUser(user);
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
                 .map(user -> {
                     boolean updateUserEmail = request.getEmail() != null && !request.getEmail().equals(user.getEmail());
                     if (updateUserEmail && !emailNotBusy(request.getEmail())) {
-                        throw new EmailIsBusy("Email занят, укажите другой");
+                        throw new AlreadyOccupiedEmailException("Email занят, укажите другой");
                     }
                     return userMapper.updateUser(request);
                 })
@@ -76,9 +76,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean emailNotBusy(String email) {
         List<String> emails = userRepository.getEmails();
-        if (emails.isEmpty()) {
-            return true;
-        }
-        return !emails.contains(email);
+        return emails.isEmpty() || !emails.contains(email);
     }
 }

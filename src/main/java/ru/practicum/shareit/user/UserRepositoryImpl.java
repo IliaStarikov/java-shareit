@@ -40,8 +40,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<String> getEmails() {
-        return new ArrayList<>(users.values().stream()
+        return users.values().stream()
                 .map(User::getEmail)
-                .toList());
+                .toList();
     }
 }
