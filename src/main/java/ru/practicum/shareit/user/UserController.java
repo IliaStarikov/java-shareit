@@ -8,8 +8,6 @@ import ru.practicum.shareit.user.dto.UserCreateDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserUpdateDto;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
@@ -17,14 +15,14 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
+    @GetMapping("/{id}")
+    public UserDto getUser(@PathVariable long id) {
+        return userService.findUser(id);
+    }
+
     @PostMapping
     public UserDto addUser(@Valid @RequestBody UserCreateDto request) {
         return userService.addUser(request);
-    }
-
-    @GetMapping("/{id}")
-    public UserDto findUser(@PathVariable long id) {
-        return userService.findUser(id);
     }
 
     @PatchMapping("/{id}")
@@ -35,10 +33,5 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable long id) {
         userService.deleteUser(id);
-    }
-
-    @GetMapping
-    public List<UserDto> getUsers() {
-        return userService.getUsers();
     }
 }

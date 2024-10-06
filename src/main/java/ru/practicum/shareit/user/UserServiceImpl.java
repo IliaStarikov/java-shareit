@@ -3,6 +3,7 @@ package ru.practicum.shareit.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.AlreadyOccupiedEmailException;
 import ru.practicum.shareit.exception.NotFoundEntityException;
 import ru.practicum.shareit.user.dto.UserCreateDto;
@@ -10,72 +11,73 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserUpdateDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 
-import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
     @Override
+    @Transactional
     public UserDto addUser(UserCreateDto request) {
         log.info("Создание нового пользователя {}", request);
-        if (!emailNotBusy(request.getEmail())) {
+        if (findByEmail(request.getEmail()).isPresent()) {
             throw new AlreadyOccupiedEmailException("Email занят");
         }
         User user = userMapper.toUser(request);
-        user = userRepository.addUser(user);
+
+        user = userRepository.save(user);
         log.info("Создан пользователь: {}", user);
         return userMapper.toUserDto(user);
     }
 
     @Override
-    public UserDto findUser(long id) {
-        log.info("Получение User c id: {}", id);
-        return userRepository.findUser(id)
+    public UserDto findUser(long userId) {
+        log.info("Получение User c id: {}", userId);
+        return userRepository.findById(userId)
                 .map(userMapper::toUserDto)
                 .orElseThrow(() -> new NotFoundEntityException("Пользователь не найден"));
     }
 
     @Override
-    public UserDto updateUser(long id, UserUpdateDto request) {
+    @Transactional
+    public UserDto updateUser(long userId, UserUpdateDto request) {
         log.info("Обновление пользователя: {}", request);
-        User updateUser = userRepository.findUser(id)
+        User updateUser = userRepository.findById(userId)
                 .map(user -> {
-                    boolean updateUserEmail = request.getEmail() != null && !request.getEmail().equals(user.getEmail());
-                    if (updateUserEmail && !emailNotBusy(request.getEmail())) {
+                    boolean isEmailUpdateRequired = request.getEmail() != null &&
+                            !request.getEmail().equals(user.getEmail());
+                    if (isEmailUpdateRequired && findByEmail(request.getEmail()).isPresent()) {
                         throw new AlreadyOccupiedEmailException("Email занят, укажите другой");
                     }
-                    return userMapper.updateUser(request);
+                    userMapper.updateUser(request, user);
+                    return user;
                 })
                 .orElseThrow(() -> new NotFoundEntityException("Пользователь не найден"));
-        updateUser = userRepository.updateUser(updateUser, id);
+        updateUser.setId(userId);
+
+        updateUser = userRepository.save(updateUser);
         log.info("Пользователь {} обновлен", updateUser);
         return userMapper.toUserDto(updateUser);
     }
 
     @Override
-    public void deleteUser(long id) {
-        log.info("Удаление пользователя с id: {}", id);
-        userRepository.findUser(id)
+    @Transactional
+    public void deleteUser(long userId) {
+        log.info("Удаление пользователя с id: {}", userId);
+        userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundEntityException("Пользователь не найден"));
-        userRepository.deleteUser(id);
-        log.info("Пользователь с id: {} удален", id);
+
+        userRepository.deleteById(userId);
+        log.info("Пользователь с id: {} удален", userId);
     }
 
-    @Override
-    public List<UserDto> getUsers() {
-        log.info("Получение всех пользователей");
-        return userRepository.getUsers().stream()
-                .map(userMapper::toUserDto)
-                .toList();
-    }
-
-    @Override
-    public boolean emailNotBusy(String email) {
-        List<String> emails = userRepository.getEmails();
-        return emails.isEmpty() || !emails.contains(email);
+    private Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
