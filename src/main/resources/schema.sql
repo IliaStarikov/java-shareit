@@ -1,12 +1,3 @@
--- Удаляем все внешние ключи для обеспечения корректного удаления таблиц
-ALTER TABLE comments DROP CONSTRAINT IF EXISTS fk_comments_item_id;
-ALTER TABLE comments DROP CONSTRAINT IF EXISTS fk_comments_user_id;
-
-ALTER TABLE bookings DROP CONSTRAINT IF EXISTS fk_item_id;
-ALTER TABLE bookings DROP CONSTRAINT IF EXISTS fk_user_id2;
-
-ALTER TABLE items DROP CONSTRAINT IF EXISTS fk_user_id;
-
 -- Удаляем таблицы
 DROP TABLE IF EXISTS comments CASCADE;
 DROP TABLE IF EXISTS bookings CASCADE;

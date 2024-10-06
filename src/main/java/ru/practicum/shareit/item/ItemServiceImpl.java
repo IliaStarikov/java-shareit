@@ -44,9 +44,11 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto addItem(ItemCreateDto request, long userId) {
         log.info("Создание нового Item, OwnerId: {}", userId);
         Item item = itemMapper.toItem(request);
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundEntityException("User не найден"));
         item.setOwner(user);
+
         item = itemRepository.save(item);
         log.info("Item с ID: {} создан", item);
         return itemMapper.toItemDto(item);
