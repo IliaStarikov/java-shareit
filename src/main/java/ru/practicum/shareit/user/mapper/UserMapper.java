@@ -1,17 +1,18 @@
 package ru.practicum.shareit.user.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingConstants;
+import org.mapstruct.*;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserCreateDto;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserUpdateDto;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = "spring", nullValueMapMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT)
 public interface UserMapper {
-    User toUser(UserCreateDto requestDto);
+
+    User toUser(UserCreateDto request);
 
     UserDto toUserDto(User user);
 
-    User updateUser(UserUpdateDto requestDto);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateUser(UserUpdateDto request, @MappingTarget User user);
 }
