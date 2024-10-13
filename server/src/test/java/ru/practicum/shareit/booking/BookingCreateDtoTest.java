@@ -10,50 +10,50 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class BookingCreateDtoTest {
 
-    private BookingCreateDto BookingCreateDto;
+    private BookingCreateDto bookingCreateDto;
 
     @BeforeEach
     void setup() {
         // Arrange
-        BookingCreateDto = new BookingCreateDto();
+        bookingCreateDto = new BookingCreateDto();
     }
 
     @Test
     void testIdSetterAndGetter() {
         // Arrange
-        BookingCreateDto.setId(1L);
+        bookingCreateDto.setId(1L);
 
         // Assert
-        assertThat(BookingCreateDto.getId()).isEqualTo(1L);
+        assertThat(bookingCreateDto.getId()).isEqualTo(1L);
     }
 
     @Test
     void testStartSetterAndGetter() {
         // Arrange
         LocalDateTime startTime = LocalDateTime.of(2024, 10, 10, 10, 0);
-        BookingCreateDto.setStart(startTime);
+        bookingCreateDto.setStart(startTime);
 
         // Assert
-        assertThat(BookingCreateDto.getStart()).isEqualTo(startTime);
+        assertThat(bookingCreateDto.getStart()).isEqualTo(startTime);
     }
 
     @Test
     void testEndSetterAndGetter() {
         // Arrange
         LocalDateTime endTime = LocalDateTime.of(2024, 10, 12, 10, 0);
-        BookingCreateDto.setEnd(endTime);
+        bookingCreateDto.setEnd(endTime);
 
         // Assert
-        assertThat(BookingCreateDto.getEnd()).isEqualTo(endTime);
+        assertThat(bookingCreateDto.getEnd()).isEqualTo(endTime);
     }
 
     @Test
     void testItemIdSetterAndGetter() {
         // Arrange
-        BookingCreateDto.setItemId(2L);
+        bookingCreateDto.setItemId(2L);
 
         // Assert
-        assertThat(BookingCreateDto.getItemId()).isEqualTo(2L);
+        assertThat(bookingCreateDto.getItemId()).isEqualTo(2L);
     }
 
     @Test
@@ -61,17 +61,17 @@ class BookingCreateDtoTest {
         // Arrange
         LocalDateTime startTime = LocalDateTime.of(2024, 10, 10, 10, 0);
         LocalDateTime endTime = LocalDateTime.of(2024, 10, 12, 10, 0);
-        BookingCreateDto = new BookingCreateDto();
-        BookingCreateDto.setId(1L);
-        BookingCreateDto.setStart(startTime);
-        BookingCreateDto.setEnd(endTime);
-        BookingCreateDto.setItemId(2L);
+        bookingCreateDto = new BookingCreateDto();
+        bookingCreateDto.setId(1L);
+        bookingCreateDto.setStart(startTime);
+        bookingCreateDto.setEnd(endTime);
+        bookingCreateDto.setItemId(2L);
 
         // Assert
-        assertThat(BookingCreateDto.getId()).isEqualTo(1L);
-        assertThat(BookingCreateDto.getStart()).isEqualTo(startTime);
-        assertThat(BookingCreateDto.getEnd()).isEqualTo(endTime);
-        assertThat(BookingCreateDto.getItemId()).isEqualTo(2L);
+        assertThat(bookingCreateDto.getId()).isEqualTo(1L);
+        assertThat(bookingCreateDto.getStart()).isEqualTo(startTime);
+        assertThat(bookingCreateDto.getEnd()).isEqualTo(endTime);
+        assertThat(bookingCreateDto.getItemId()).isEqualTo(2L);
     }
 
     @Test

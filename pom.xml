@@ -77,7 +77,6 @@
 					<configuration>
 						<systemPropertyVariables>
 							<spring.profiles.active>test</spring.profiles.active>
-							<argLine>-XX:+EnableDynamicAgentLoading</argLine>
 						</systemPropertyVariables>
 					</configuration>
 				</plugin>

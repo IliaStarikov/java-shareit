@@ -9,22 +9,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import static ru.practicum.shareit.booking.BookingStatus.APPROVED;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static ru.practicum.shareit.booking.BookingStatus.APPROVED;
 import static ru.practicum.shareit.util.Header.X_SHARER_USER_ID;
 
 @WebMvcTest(BookingController.class)
@@ -40,7 +34,7 @@ public class BookingControllerTest {
     private BookingService bookingService;
 
     private BookingDto bookingDto;
-    private BookingCreateDto BookingCreateDto;
+    private BookingCreateDto bookingCreateDto;
 
     @BeforeEach
     void setup() {
@@ -49,10 +43,10 @@ public class BookingControllerTest {
         bookingDto.setId(1L);
         bookingDto.setStatus(APPROVED);
 
-        BookingCreateDto = new BookingCreateDto();
-        BookingCreateDto.setItemId(1L);
-        BookingCreateDto.setStart(LocalDateTime.now());
-        BookingCreateDto.setEnd(LocalDateTime.now().plusDays(2));
+        bookingCreateDto = new BookingCreateDto();
+        bookingCreateDto.setItemId(1L);
+        bookingCreateDto.setStart(LocalDateTime.now());
+        bookingCreateDto.setEnd(LocalDateTime.now().plusDays(2));
     }
 
     @Test
@@ -64,7 +58,7 @@ public class BookingControllerTest {
         // Act & Expect
         mockMvc.perform(post("/bookings")
                         .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(BookingCreateDto))
+                        .content(objectMapper.writeValueAsString(bookingCreateDto))
                         .header(X_SHARER_USER_ID, 1L))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
